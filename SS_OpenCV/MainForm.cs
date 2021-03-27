@@ -1006,7 +1006,7 @@ namespace SS_OpenCV
             MIplImage s = imgUndo.MIplImage;
             //char "r";
             
-            ImageClass.Digitos(img);
+            ImageClass.Digits(img);
             String b=ImageClass.EvaluateCompNumber();
             //Console.WriteLine(b);
             

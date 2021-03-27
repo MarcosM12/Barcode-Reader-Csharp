@@ -478,7 +478,7 @@
 			// 
 			this.digitosToolStripMenuItem.Name = "digitosToolStripMenuItem";
 			this.digitosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.digitosToolStripMenuItem.Text = "Digitos";
+			this.digitosToolStripMenuItem.Text = "Digits";
 			this.digitosToolStripMenuItem.Click += new System.EventHandler(this.digitosToolStripMenuItem_Click);
 			// 
 			// digitosBarraToolStripMenuItem

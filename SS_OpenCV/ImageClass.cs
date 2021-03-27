@@ -517,7 +517,7 @@ namespace SS_OpenCV
 
         /// <summary>
         /// Mean
-        /// Mean filter
+        /// Applies a mean filter to image [img] 
         /// </summary>
         /// <param name="img">image</param> 
         /// <param name="imgCopy">Backup image</param>
@@ -567,13 +567,13 @@ namespace SS_OpenCV
                 dataPtr = dataPtr_Base; // reset dataPtr to point to initial pos (0,0)
                 dataPtrCopy = dataPtrCopy_Base; // reset dataPtr to point to initial pos (0,0)
 
-                //(canto superior esquerdo)  x=0 e y=0
+                //(Top-left corner)  x=0 e y=0
                 for (int i = 0; i <= 2; i++) {
                     dataPtr[i] = (byte)Math.Round((((dataPtrCopy)[i] * 4.0 + (dataPtrCopy + nChan)[i] * 2.0 + (dataPtrCopy + aux_2)[i] + (dataPtrCopy + widthStep)[i] * 2.0) / 9.0));
                 }
 
 
-                //(linha cima) y=0 e x
+                //(Top line) y=0 e x
                 dataPtr += nChan;
                 dataPtrCopy += nChan;
                 for (x = 1; x < width - 1; x++) {
@@ -586,14 +586,15 @@ namespace SS_OpenCV
                     dataPtrCopy += nChan;
                 }
 
-                //(canto superior direito) y=0 x= width
+                //(Top-right corner) y=0 x= width
                 for (int k = 0; k < 3; k++) {
                     dataPtr[k] = (byte)Math.Round((((dataPtrCopy)[k] * 4.0 + (dataPtrCopy - nChan)[k] * 2.0 + (dataPtrCopy + aux_4)[k] + (dataPtrCopy + widthStep)[k] * 2.0) / 9.0));
                 }
 
                 dataPtr += nChan;
                 dataPtrCopy += nChan;
-                //(linha esquerda) x=0 y
+
+                //(Left side line) x=0 y
                 dataPtr += padding;
                 dataPtrCopy += padding;
                 for (y = 1; y < height - 1; y++) {
@@ -605,13 +606,13 @@ namespace SS_OpenCV
                     dataPtrCopy += widthStep;
                 }
 
-                //(canto inferior esquerdo) y=height x=0
+                //(Bottom-left corner) y=height x=0
                 for (int k = 0; k < 3; k++) {
                     dataPtr[k] = (byte)Math.Round((((dataPtrCopy)[k] * 4.0 + (dataPtrCopy + nChan)[k] * 2.0 + (dataPtrCopy + aux_1)[k] + (dataPtrCopy - widthStep)[k] * 2.0) / 9.0));
                 }
 
 
-                //(linha baixo)  y=height e x
+                //(Bottom line)  y=height e x
                 dataPtr += nChan;
                 dataPtrCopy += nChan;
                 for (x = 1; x < width - 1; x++) {
@@ -623,7 +624,7 @@ namespace SS_OpenCV
                     dataPtrCopy += nChan;
                 }
 
-                //(canto inferior direito) y=height e x=width
+                //(Bottom-rigth corner) y=height e x=width
                 for (int k = 0; k < 3; k++) {
                     dataPtr[k] = (byte)Math.Round((((dataPtrCopy)[k] * 4.0 + (dataPtrCopy - widthStep)[k] * 2.0 + (dataPtrCopy - nChan)[k] * 2.0 + (dataPtrCopy + aux_3)[k]) / 9.0));
                 }
@@ -920,14 +921,7 @@ namespace SS_OpenCV
                         dataPtr[k] = (byte)dataPtrAux;
                 }
 
-                /*
-                dataPtr += nChan;
-                dataPtrCopy += nChan;
-
-                //(linha esquerda) x=0 y
-                dataPtr += padding;
-                dataPtrCopy += padding;
-                */
+             
 
 
                 dataPtr = dataPtr_Base; // reset do apontador pos original (0,0)
@@ -1007,33 +1001,7 @@ namespace SS_OpenCV
                         dataPtr[k] = (byte)dataPtrAux;
                 }
 
-                /*
-                dataPtr = dataPtr_Base;
-                dataPtrCopy = dataPtrCopy_Base;
-
-                dataPtr += 2 * widthStep - padding - nChan;
-                dataPtrCopy += 2 * widthStep - padding - nChan;
-
-                for (y = 1; y < height - 1; y++)
-                {
-                    for (int k = 0; k < 3; k++)
-                    {
-                        dataPtrAux = Math.Round((((dataPtrCopy + aux_3)[k] * matrix[0, 0] + (dataPtrCopy - widthStep)[k] * matrix[0, 1] +
-                                (dataPtrCopy + aux_1)[k] * matrix[0, 2] + (dataPtrCopy - nChan)[k] * matrix[1, 0] + dataPtrCopy[k] * matrix[1, 1] +
-                                (dataPtrCopy + nChan)[k] * matrix[1, 2] + (dataPtrCopy + aux_4)[k] * matrix[2, 0] + (dataPtrCopy + widthStep)[k] * matrix[2, 1] +
-                                (dataPtrCopy + aux_2)[k] * matrix[2, 2]) / matrixWeight));
-
-                        if (dataPtrAux < 0)
-                            dataPtr[k] = 0;
-                        else if (dataPtrAux > 255)
-                            dataPtr[k] = 255;
-                        else
-                            dataPtr[k] = (byte)dataPtrAux;
-                    }
-                    dataPtr += widthStep;
-                    dataPtrCopy += widthStep;
-                }
-                */
+           
 
                 //(linha direita) x=width y
                 dataPtr -= widthStep;
@@ -1462,7 +1430,7 @@ namespace SS_OpenCV
                 double R0_p0, R0_p1, R1_p0, R1_p1, R2_p0, R2_p1;
                 double r = 0, g = 0, b = 0;
                 int x = 0, y = 0;
-                /*NOTAS:
+                /*Notes:
                     O TRATAMENTO DO CANTO SUPERIOR ESQUERDO = LINHA SUPERIOR = COLUNA ESQUERDA = CENTRO
                     O TRATAMENTO DO CANTO SUPERIOR DIREITO = COLUNA DIREITA
                     O TRATAMENTO DO CANTO INFERIOR ESQUERDO = LINHA INFERIOR                                  
@@ -1482,22 +1450,7 @@ namespace SS_OpenCV
                 R2_p0 = Math.Abs(dataPtrCopy[2] - (dataPtrCopy + nChan + m2.widthStep)[2]);
                 R2_p1 = Math.Abs((dataPtrCopy + nChan)[2] - (dataPtrCopy + m2.widthStep)[2]);
                 r = Math.Round(R2_p0 + R2_p1);
-                /*if(b > 255)
-                {
-                    dataPtr[0] = 255
-                }
-                else
-                {
-                    if(b < 0)
-                    {
-                        dataPtr[0] = 0;
-                    }
-                    else
-                    {
-                        dataPtr[0] =b;
-                    }
-                }
-                */
+    
                 dataPtr[0] = (byte)((b > 255) ? 255 : (b < 0 ? 0 : b));  //1º Caso b maior que 255 --> b=255 senão [2ºCaso b menor que 0---> b=0 senão mantem o valor de b original]  
                 dataPtr[1] = (byte)((g > 255) ? 255 : (g < 0 ? 0 : g));
                 dataPtr[2] = (byte)((r > 255) ? 255 : (r < 0 ? 0 : r));
@@ -1655,10 +1608,10 @@ namespace SS_OpenCV
                     dataPtrCopy -= m2.widthStep;
 
                 }
-                //Tratar finalmente da parte CENTRAL
+               
 
 
-                //centro/////////////////////////////////////////////////////////////////////////////////////////////
+                //Image Center/////////////////////////////////////////////////////////////////////////////////////////////
 
                 dataPtr += m2.widthStep;
                 dataPtrCopy += m2.widthStep;
@@ -2920,6 +2873,12 @@ namespace SS_OpenCV
 
         }
 
+        /// <summary>
+        /// Iterativo
+        /// Applies iterative method to image [img] 
+        /// The objective of this function is to find potential objects and identify them thourgh different labels
+        /// </summary>
+        /// <param name="img">image</param
         public unsafe static int[,] Iterativo(Emgu.CV.Image<Bgr, byte> img)
         {
             MIplImage m = img.MIplImage;
@@ -2936,7 +2895,7 @@ namespace SS_OpenCV
             int i, y, x, j, count = 1;
             int end_it = 0;
 
-            //Atribuição de etiquetas
+            //Label attribution
             for (y = 0; y < height; y++)
             {
                 for (x = 0; x < width; x++)
@@ -2959,7 +2918,7 @@ namespace SS_OpenCV
             while (end_it == 0)
             {
                 //CORE
-                //cima baixo esquerda direita 
+                
                 end_it = 1;
                 for (y = 1; y < height - 1; y++)
                 {
@@ -2985,7 +2944,6 @@ namespace SS_OpenCV
                 }
 
                 //CORE
-                //baixo cima  e direita esquerda 
                 if (end_it == 1)
                     break;
 
@@ -3017,9 +2975,16 @@ namespace SS_OpenCV
         }
 
 
-
-
-
+    
+    ///Debug
+    /*
+        /// <summary>
+        /// SaveLabels
+        /// Function for debug
+        /// Saaves all images that are pontial objects
+        /// </summary>
+        /// <param name="img">image</param
+        /// <param name="img_bin">Backup image</param
         public unsafe static void SaveLabels(Emgu.CV.Image<Bgr, byte> img, Emgu.CV.Image<Bgr, byte> img_bin)
         {
 
@@ -3040,11 +3005,11 @@ namespace SS_OpenCV
             List<int> etiquetas = new List<int>();
 
 
-            // Fazer as etiquetas com o iterativo
+            
             labels = Iterativo(img_bin);
 
 
-            //Número de Etiquetas
+           
             for (y = 0; y < height; y++)
             {
                 for (x = 0; x < width; x++)
@@ -3091,7 +3056,7 @@ namespace SS_OpenCV
                                 xf = Math.Max(xf, x);
                                 yf = y;
 
-                                //Criar a imagem nova e avaliar
+                                
                                 Image<Bgr, byte> img_cut = new Image<Bgr, byte>(xf - x0 + 1, yf - y0 + 1);
                                 Rectangle rect = new Rectangle(x0, y0, xf - x0 + 1, yf - y0 + 1); //Rectangle for crop
                                 img_cut = img_bin.GetSubRect(rect);
@@ -3111,11 +3076,15 @@ namespace SS_OpenCV
 
         }
 
+        */
 
+         /// <summary>
+        /// Border
+        /// Creates a black border around image [img]
+        /// </summary>
+        /// <param name="img">image</param
         public static unsafe void Border(Image<Bgr, byte> img) //Border de 1 pixel na imagem
         {
-
-
             MIplImage m = img.MIplImage;
             byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
             byte* dataPtr_Base = dataPtr; //reset
@@ -3125,28 +3094,24 @@ namespace SS_OpenCV
                                                   //byte blue, green, red;
             double width = img.Width;
             double height = img.Height;
-            int nChan = s.nChannels; // number of channels - 3
-            int padding = s.widthStep - s.nChannels * s.width; // alinhament bytes (padding)
+            int nChan = s.nChannels; 
+            int padding = s.widthStep - s.nChannels * s.width;
             int widthStep = s.widthStep;
             double x, y;
 
             int aux_1 = nChan - widthStep, aux_2 = nChan + widthStep, aux_3 = -nChan - widthStep, aux_4 = -nChan + widthStep;
-            //aux_1 = canto superior direito
-            //aux_2 = canto inferior direito
-            //aux_3 = canto superior esquerdo
-            //aux_4 = canto inferior esquerdo
+      
 
             if (nChan == 3)
             {
 
-                //(canto superior esquerdo)  x=0 e y=0
+                
                 for (int k = 0; k <= 2; k++)
                 {
                     dataPtrCopy[k] = 0;
                 }
 
 
-                //(linha cima) y=0 e x
                 dataPtr += nChan;
                 dataPtrCopy += nChan;
                 for (x = 1; x < width - 1; x++)
@@ -3161,7 +3126,7 @@ namespace SS_OpenCV
                     dataPtrCopy += nChan;
                 }
 
-                //(canto superior direito) y=0 x= width
+
                 for (int k = 0; k < 3; k++)
                 {
                     dataPtr[k] = 0;
@@ -3169,9 +3134,10 @@ namespace SS_OpenCV
 
                 dataPtr += nChan;
                 dataPtrCopy += nChan;
-                //(linha esquerda) x=0 y
+              
                 dataPtr += padding;
                 dataPtrCopy += padding;
+
                 for (y = 1; y < height - 1; y++)
                 {
                     for (int k = 0; k < 3; k++)
@@ -3184,7 +3150,7 @@ namespace SS_OpenCV
                     dataPtrCopy += widthStep;
                 }
 
-                //(canto inferior esquerdo) y=height x=0
+                
                 for (int k = 0; k < 3; k++)
                 {
 
@@ -3192,8 +3158,7 @@ namespace SS_OpenCV
 
                 }
 
-
-                //(linha baixo)  y=height e x
+ 
                 dataPtr += nChan;
                 dataPtrCopy += nChan;
                 for (x = 1; x < width - 1; x++)
@@ -3206,7 +3171,7 @@ namespace SS_OpenCV
                     dataPtrCopy += nChan;
                 }
 
-                //(canto inferior direito) y=height e x=width
+             
                 for (int k = 0; k < 3; k++)
                 {
                     dataPtr[k] = 0;
@@ -3218,7 +3183,8 @@ namespace SS_OpenCV
 
                 dataPtr += 2 * widthStep - padding - nChan;
                 dataPtrCopy += 2 * widthStep - padding - nChan;
-                //linha direita
+              
+
                 for (y = 1; y < height - 1; y++)
                 {
                     for (int k = 0; k < 3; k++)
@@ -3234,7 +3200,13 @@ namespace SS_OpenCV
 
         }
 
-
+         /// <summary>
+        /// RectangleIterative
+        /// Function for debug
+        /// Saaves all images that are pontial objects
+        /// </summary>
+        /// <param name="img">image</param
+        /// <param name="img_bin">Backup image</param
         public unsafe static int[] RectangleIterative(Emgu.CV.Image<Bgr, byte> img, float treshold)
         {
 
@@ -3246,7 +3218,7 @@ namespace SS_OpenCV
             int nChan = s.nChannels; // number of channels - 3
             int padding = s.widthStep - s.nChannels * s.width; // alinhament bytes (padding)
             int widthStep = s.widthStep;
-            int x = 0, y = 0, i = 0, z = 1, height = s.height, width = s.width, first = 0, xfinal = 0, yMax = 0, xMin = 0, a0 = 0;
+            int x = 0, y = 0, i = 0, z = 1, height = s.height, width = s.width, first = 0;
             int[,] labels = new int[s.height, s.width];
             int max = Math.Max(width, height);
             List<int> etiquetas = new List<int>();
@@ -3254,11 +3226,10 @@ namespace SS_OpenCV
             int[] matrix = new int[4];  //[xi,yi,xf,yf]
 
 
-            // Fazer as etiquetas com o iterativo
+            // Call iterative method to mark potential objects with labels
             labels = Iterativo(img);
 
-
-            //Número total de Etiquetas
+            //Store label number in a etiquets list based on the coordenates of the marked pixel
             for (y = 0; y < height; y++)
             {
                 for (x = 0; x < width; x++)
@@ -3280,7 +3251,7 @@ namespace SS_OpenCV
                 }
             }
 
-            //Dimensões das Etiquetas
+           
 
             int x0 = 0, xf = 0, y0 = 0, yf = 0;
 
@@ -3298,7 +3269,7 @@ namespace SS_OpenCV
                                 x0 = x;
                                 y0 = y;
                                 z = 1;
-                                //a0 = 0;
+                             
 
                             }
                             else
@@ -3307,7 +3278,7 @@ namespace SS_OpenCV
                                 xf = Math.Max(xf, x);
                                 yf = y;
 
-                                if (((yf - y0 + 1) / (xf - x0 + 1)) > treshold) //encontra labels com racio 3
+                                if (((yf - y0 + 1) / (xf - x0 + 1)) > treshold) 
                                 {  
                                     if (z == 1)
                                     {
@@ -3330,7 +3301,7 @@ namespace SS_OpenCV
                                     }
 
 
-									////////guardar imagens etiquetas
+									////////Store labels (for debug)
 									//Image<Bgr, byte> img_cut = new Image<Bgr, byte>(xf-x0+1, yf-y0+1);
 									//Rectangle rect = new Rectangle(x0, y0, xf-x0+1, yf-y0+1); //Rectangle for crop
 									//img_cut=img.GetSubRect(rect);
@@ -3349,31 +3320,35 @@ namespace SS_OpenCV
             return matrix;
         }
 
-        public unsafe static string Digitos(Emgu.CV.Image<Bgr, byte> img)
+         /// <summary>
+        /// Digits
+        /// Identifies all the numbers present in a barcode image
+        /// Returns a string with the identified numbers
+        /// </summary>
+        /// <param name="img">image</param
+        public unsafe static string Digits(Emgu.CV.Image<Bgr, byte> img)
         {
 
             MIplImage s = img.MIplImage;
             byte* dataPtr = (byte*)s.imageData.ToPointer(); // Pointer to the image
             byte* dataPtr_Base = dataPtr;
-            //MIplImage l = img_bin.MIplImage;
-            //byte* dataPtrl = (byte*)l.imageData.ToPointer(); // Pointer to the image
-            //byte* dataPtr_Basel = dataPtrl;
 
-            int nChan = s.nChannels; // number of channels - 3
-            int padding = s.widthStep - s.nChannels * s.width; // alinhament bytes (padding)
+            int nChan = s.nChannels; 
+            int padding = s.widthStep - s.nChannels * s.width; 
             int widthStep = s.widthStep;
             int x = 0, y = 0, i = 0, z = 1, height = s.height, width = s.width, counter=0;
             int[,] labels = new int[s.height, s.width];
             int max = Math.Max(width, height);
-            int racio;
-            string digitos = "";
+            int ratio;
+
+            string digits_found = "";
             List<int> etiquetas = new List<int>();
             List<int> barras = new List<int>();
             int[] matrix = new int[4];  //[xi,yi,xf,yf]
 
 
-            // Fazer as etiquetas com o iterativo
-            labels = Iterativo(img);
+            //Call iterative method to find all labels in img
+            labels = Iterativo(img); 
 
 
             //Número total de Etiquetas
@@ -3398,7 +3373,7 @@ namespace SS_OpenCV
                 }
             }
 
-            //Dimensões das Etiquetas
+         
 
             int x0 = 0, xf = 0, y0 = 0, yf = 0;
 
@@ -3431,8 +3406,8 @@ namespace SS_OpenCV
                     }
                 }
 
-                racio = (yf - y0 + 1) / (xf - x0 + 1);
-                if (racio < 2.6 && counter <13)
+                ratio = (yf - y0 + 1) / (xf - x0 + 1);
+                if (ratio < 2.6 && counter <13)
                 {
                     Image<Bgr, byte> img_cut = new Image<Bgr, byte>(xf - x0 + 1, yf - y0 + 1);
                     Rectangle rect = new Rectangle(x0, y0, xf - x0 + 1, yf - y0 + 1); //Rectangle for crop
@@ -3449,8 +3424,8 @@ namespace SS_OpenCV
 
 			}
 
-            digitos=EvaluateCompNumber();
-            return digitos;
+            digits_found=EvaluateCompNumber();
+            return digits_found;
         }
 
         public unsafe static void DeleteImages(){
@@ -3469,18 +3444,19 @@ namespace SS_OpenCV
         
         public unsafe static string EvaluateCompNumber()
         {
-           
-                int x = 0, y = 0, i = 0,j=0, rank=0, count=0, aux=0, aux2=0, digit = 0, aux3=0;
+                String number_files = "C:\\Users\\teixe\\Desktop\\Trab.final\\SS_OpenCV_Base\\Numbers\\";
+                String labels_path = "C:\\Labels\\"; //Folder where the labels are stored
+                int x = 0, y = 0, rank=0, count=0, aux=0, aux2=0, digit = 0, aux3=0;
                 string digitos = "";
 
-                DirectoryInfo d = new DirectoryInfo(@"C:\\Labels\\");//Assuming Labels is your Folder
+                DirectoryInfo d = new DirectoryInfo(labels_path);//Assuming Labels is your Folder
                 FileInfo[] Files = d.GetFiles("*.png"); //Getting png files
-                string str = "";
+             
 
                 Regex digitPart = new Regex(@"^\d+", RegexOptions.Compiled);
-                var filelist = Files.ToList().OrderBy(f => int.Parse(digitPart.Match(f.Name).Value));
+                var filelist = Files.ToList().OrderBy(f => int.Parse(digitPart.Match(f.Name).Value)); //Sort files by number
 
-                DirectoryInfo e = new DirectoryInfo(@"C:\\Users\\teixe\\Desktop\\Trab.final\\SS_OpenCV_Base\\Numbers\\");
+                DirectoryInfo e = new DirectoryInfo(number_files);
                 FileInfo[] Files_Numbers = e.GetFiles("*.png"); //Getting png files
 
                 int[] RankNum = new int[50];
@@ -3488,27 +3464,27 @@ namespace SS_OpenCV
                  
                 foreach (FileInfo file in filelist)
                 {
-                    Image<Bgr, Byte> img_cut = new Image<Bgr, Byte>("C:\\Labels\\" + file.Name);
+                    Image<Bgr, Byte> img_cut = new Image<Bgr, Byte>(labels_path + file.Name);
                     int height_cut = img_cut.Height, width_cut = img_cut.Width;
                     MIplImage s = img_cut.MIplImage;                    
-                    byte* dataPtr = (byte*)s.imageData.ToPointer(); // Pointer to the image
+                    byte* dataPtr = (byte*)s.imageData.ToPointer(); 
                     byte* dataPtr_Base = dataPtr;
 
-                    int nChan_cut = s.nChannels; // number of channels - 3
-                    int padding_cut = s.widthStep - s.nChannels * s.width; // alinhament bytes (padding)
+                    int nChan_cut = s.nChannels; 
+                    int padding_cut = s.widthStep - s.nChannels * s.width; 
                     int widthStep_cut = s.widthStep;
-                    //str = file.Name + ", " + str;
+                  
                     
                     foreach (FileInfo file_num in Files_Numbers){
                         
-                        Image<Bgr, Byte> img_num = new Image<Bgr, Byte>("C:\\Users\\teixe\\Desktop\\Trab.final\\SS_OpenCV_Base\\Numbers\\" + file_num.Name);
+                        Image<Bgr, Byte> img_num = new Image<Bgr, Byte>(number_files + file_num.Name);
                         int height_num = img_num.Height, width_num = img_num.Width;
-                        MIplImage l = img_num.MIplImage;                 // Numero da base de dados
+                        MIplImage l = img_num.MIplImage;                 
                         byte* dataPtrl = (byte*)l.imageData.ToPointer(); // Pointer to the image
                         byte* dataPtr_Basel = dataPtrl;
                         dataPtr=dataPtr_Base;
-                        int nChan_num = l.nChannels; // number of channels - 3
-                        int padding_num = l.widthStep - l.nChannels * l.width; // alinhament bytes (padding)
+                        int nChan_num = l.nChannels; 
+                        int padding_num = l.widthStep - l.nChannels * l.width; 
                         int widthStep_num = l.widthStep;
 
                         count = 0;
@@ -3536,11 +3512,8 @@ namespace SS_OpenCV
                                     
                                 }
                                 
-                                //dataPtr += nChan_cut;
-                                //dataPtrl += nChan_num;
                             }
-                            //dataPtr += padding_cut;
-                            //dataPtrl += padding_num;
+                            
                         }
                         RankNum[aux] = count;
                         aux++;
@@ -3549,8 +3522,8 @@ namespace SS_OpenCV
                     aux=0;
                    
 
-                    rank  = RankNum.Min();
-                    digit = Array.IndexOf(RankNum, rank); //ao encontrar o minimo vais encontrar o respetivo indice do vetor
+                    rank  = RankNum.Min(); //Find min value in Ranknum list 
+                    digit = Array.IndexOf(RankNum, rank); // Find index of rank
                 
                     if (digit >= 0 && digit <= 4) {
                         digit = 0;
@@ -3965,8 +3938,6 @@ namespace SS_OpenCV
             Image<Bgr, Byte> imgUndo = null; // undo backup image - UNDO
             Image<Bgr, Byte> imgCopia = null; // undo backup image - UNDO
             Image<Bgr, Byte> imgC = null; // undo backup image - UNDO
-            //Image<Bgr, Byte> Barcode_1 = null;
-            //Image<Bgr, Byte> Barcode_2 = null;
             imgUndo = img.Copy();
             imgCopia = img.Copy();
             
@@ -4002,8 +3973,8 @@ namespace SS_OpenCV
                         bc_size1.Width=Math.Abs((matrix[0]-matrix[1]));
                         bc_size1.Height=Math.Abs((matrix[2]-matrix[3]));
 
-                        Console.WriteLine(Digitos(img));
-                        bc_number1=Digitos(img);
+                        Console.WriteLine(Digits(img));
+                        bc_number1=Digits(img);
                         matrix=Treshold_barcode(img,'x', 15000,1);//matrix=[xf,xi]
                         matrix2 = Treshold_barcode(img, 'y',15000,  1); //matrix=[yf,yi]
                         bc_image1=DigitosBarra(img, matrix, matrix2[1]);
@@ -4017,7 +3988,7 @@ namespace SS_OpenCV
                     else { //3 e 4
 
                         if (img.Height==456) {  //3
-                             //Leitura dos digitos a partir do código de barras
+                             //Read numbers from barcode image
                             imgCopia=img.Copy();
                             ConvertToBW(img, 120);
                             Negative(img);
@@ -4027,8 +3998,8 @@ namespace SS_OpenCV
                             Console.WriteLine(bc_image1);
                         }
                         else { //4
-                             //Leitura dos digitos a partir do código de barras
-                            
+                             
+                            //Read numbers through the bars in the barcode image 
                             imgCopia=img.Copy();
                            
                             ConvertToBW(img,110);
@@ -4042,7 +4013,6 @@ namespace SS_OpenCV
                             
                         }
 
-                        //Leitura dos dígitos e desenhar retângulo
                         ConvertToBW_Otsu(imgCopia);
                         Negative(imgCopia);
                         angleRad=(float)Momento(imgCopia);
@@ -4063,7 +4033,7 @@ namespace SS_OpenCV
                         bc_size1.Width=Math.Abs((matrix[0]-matrix[1]));
                         bc_size1.Height=Math.Abs((matrix[2]-matrix[3]));
                     
-                        bc_number1=Digitos(imgCopia);
+                        bc_number1=Digits(imgCopia);
                         Console.WriteLine(bc_number1);
                        
 
@@ -4127,7 +4097,7 @@ namespace SS_OpenCV
                     bc_centroid2.Y=0;
                     bc_size2.Width=0;
                     bc_size2.Height=0;
-                    bc_number1=Digitos(img);
+                    bc_number1=Digits(img);
                     Console.WriteLine(bc_number1);
 
                     //Leitura ddos digitos a partir do código de barras
@@ -4190,7 +4160,7 @@ namespace SS_OpenCV
                         Console.WriteLine(bc_image1);
                     }
                     else if (img.Width==1302) {  //imagem 2_04
-						////DigitosBarra
+					
     
 						Negative(imgC);
 					    Rotation_Bilinear(imgC, imgC.Copy(), (float)((Math.PI/2)+angleRad+0.02));
@@ -4205,7 +4175,7 @@ namespace SS_OpenCV
                     }
                     else if (img.Width==705) {  //imagem 2_05
 
-						////DigitosBarra
+						
 						ConvertToBW(imgC,90);
                         Negative(imgC);
 
@@ -4238,7 +4208,7 @@ namespace SS_OpenCV
                    
                     Border(img);
                     matrix = RectangleIterative(img, 5); //[xf,xi,yf,yi]
-                    bc_number1=Digitos(img);
+                    bc_number1=Digits(img);
                     Console.WriteLine(bc_number1);
                     
                     bc_centroid1.X = matrix[1]; 
@@ -4252,7 +4222,7 @@ namespace SS_OpenCV
                     bc_size2.Width = 0;
                     bc_size2.Height = 0;
 
-                    //Leitura dos digitos a partir do código de barras
+                    
                     if (img.Width==2064) {  //imagem 3_01
                        
                         Negative(imgC);
@@ -4392,10 +4362,6 @@ namespace SS_OpenCV
                     Rotation_Bilinear(imgCopia, imgCopia.Copy(), (float)(0.03));
 
                     int [] Aux = Treshold_barcode(imgCopia, 'y', 100,0);//matrix=[yf,yi]
-					//Rectangle rect1 = new Rectangle(0, 0, width, Aux[1]);
-					//Barcode_1=imgC.GetSubRect(rect1);
-					//Rectangle rect2 = new Rectangle(0, Aux[1], width, Aux[1]);
-					//Barcode_2=imgC.GetSubRect(rect2);
 
 					Negative(imgCopia);
                     Border(imgCopia);
@@ -4414,10 +4380,8 @@ namespace SS_OpenCV
                             dataPtr[1] = 0;
                             dataPtr[2] = 0;
 
-                            // avança apontador para próximo pixel
                             dataPtr += nChan;
                         }
-                        //no fim da linha avança alinhamento (padding)
                         dataPtr += padding;
                     }
                     //Negative(img);
@@ -4433,33 +4397,10 @@ namespace SS_OpenCV
 
                     bc_size1.Width = Math.Abs((matrix[0] - matrix[1]));
                     bc_size1.Height = Math.Abs((matrix[2] - matrix[3]));
-
-					
-					//ConvertToBW(Barcode_1, 120);
-                   // Rotation_Bilinear(Barcode_1, Barcode_1.Copy(), (float)(0.04));
-                    //Negative(Barcode_1);
-                   
-                   // Barcode_1.Save("C:\\Nova pasta\\"+0+".png");
-                    //matrix = RectangleIterative(Barcode_1, 20);
-                    //bc_image1=DigitosBarra(Barcode_1, matrix, matrix[3]);
-                    //Console.WriteLine(bc_image1);
-
 					bc_centroid2.X = matrix2[1];
                     bc_centroid2.Y = matrix2[3];
                     bc_size2.Width = Math.Abs((matrix2[0] - matrix2[1]));
                     bc_size2.Height = Math.Abs((matrix2[2] - matrix2[3]));
-                  /*  
-                   ConvertToBW(Barcode_2,70);
-                   Negative(Barcode_2);
-                   //Rotation_Bilinear(Barcode_2, Barcode_2.Copy(), (float)(0.04));
-                   // Border(Barcode_2);
-                   //  //Negative(Barcode_2);
-                    
-                  // Barcode_2.Save("C:\\Nova pasta\\"+0+".png");
-                   matrix = RectangleIterative(Barcode_2, 20);
-                    bc_image2=DigitosBarra(Barcode_2, matrix, matrix[3]);
-                    Console.WriteLine(bc_image2);
-                     */
                     bc_number1="0";
                     bc_number2="0";
                     bc_image1="0";
