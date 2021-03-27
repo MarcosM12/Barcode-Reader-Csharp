@@ -453,6 +453,7 @@ namespace SS_OpenCV
                 }
             }
         }
+
          /// <summary>
         /// Scale_point_xy
         /// Scale image [img] based on scale factor [scaleFactor] and coordenates center x and center y
@@ -461,19 +462,19 @@ namespace SS_OpenCV
         /// <param name="img">image</param> 
         /// <param name="imgCopy">Backup image</param>
         /// <param name="scaleFactor">Scale factor</param>
-        /// <param name="centerX">Scale factor</param>
-        /// <param name="centerY">Scale factor</param>
+        /// <param name="centerX">Coordenate X</param>
+        /// <param name="centerY">Coordenate Y</param>
         public static unsafe void Scale_point_xy(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, float scaleFactor, int centerX, int centerY) {
 
             MIplImage m = img.MIplImage;
             MIplImage n = imgCopy.MIplImage;
-            byte* dataPtr = (byte*)m.imageData.ToPointer(); // obter apontador do inicio da imagem    
-            byte* dataCopyPtr = (byte*)n.imageData.ToPointer();// obter apontador da imagem copia
+            byte* dataPtr = (byte*)m.imageData.ToPointer();   
+            byte* dataCopyPtr = (byte*)n.imageData.ToPointer();
             byte* dataOrigPtr = dataCopyPtr;
-            int height = img.Height; //altura imagem
-            int width = img.Width;   //largura imagem
-            int nChan = m.nChannels; //N canais
-            int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
+            int height = img.Height; 
+            int width = img.Width;   
+            int nChan = m.nChannels; 
+            int padding = m.widthStep - m.nChannels * m.width; 
             int widthstep = n.widthStep;
             int x, y, x_origem = 0, y_origem = 0;
 
@@ -494,7 +495,7 @@ namespace SS_OpenCV
                         if ((x_origem >= 0) && (y_origem >= 0) && (x_origem < width) && (y_origem < height)) {
 
                             dataOrigPtr = dataCopyPtr + (y_origem) * widthstep + (x_origem) * nChan;
-                            // calcula endereço do pixel no ponto (x,y)
+                            
                             dataPtr[0] = dataOrigPtr[0];
                             dataPtr[1] = dataOrigPtr[1];
                             dataPtr[2] = dataOrigPtr[2];
@@ -505,16 +506,21 @@ namespace SS_OpenCV
                             dataPtr[1] = 0;
                             dataPtr[2] = 0;
                         }
-                        // avança apontador para próximo pixel
+                        
                         dataPtr += nChan;
                     }
-                    //no fim da linha avança alinhamento (padding)
+                   
                     dataPtr += padding;
                 }
             }
         }
 
-        
+        /// <summary>
+        /// Mean
+        /// Mean filter
+        /// </summary>
+        /// <param name="img">image</param> 
+        /// <param name="imgCopy">Backup image</param>
         public static unsafe void Mean(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy) {
 
 
@@ -558,8 +564,8 @@ namespace SS_OpenCV
                     dataPtr += padding + 2 * nChan;
                     dataPtrCopy += padding + 2 * nChan;
                 }
-                dataPtr = dataPtr_Base; // reset do apontador pos original (0,0)
-                dataPtrCopy = dataPtrCopy_Base; //reset do apontador pos original (0,0)
+                dataPtr = dataPtr_Base; // reset dataPtr to point to initial pos (0,0)
+                dataPtrCopy = dataPtrCopy_Base; // reset dataPtr to point to initial pos (0,0)
 
                 //(canto superior esquerdo)  x=0 e y=0
                 for (int i = 0; i <= 2; i++) {
@@ -639,6 +645,9 @@ namespace SS_OpenCV
             }
 
         }
+
+
+        
         public static unsafe void Mean_solutionB(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy)
         {
 
@@ -656,16 +665,12 @@ namespace SS_OpenCV
             int padding = s.widthStep - s.nChannels * s.width; // alinhament bytes (padding)
             int widthStep = s.widthStep;
             double x, y;
-            byte sum;
             double[] soma9 = new double[3];
             soma9[0] = 0;
             soma9[1] = 0;
             soma9[2] = 0;
             int aux_1 = nChan - widthStep, aux_2 = nChan + widthStep, aux_3 = -nChan - widthStep, aux_4 = -nChan + widthStep;
-            //aux_1 = canto superior direito
-            //aux_2 = canto inferior direito
-            //aux_3 = canto superior esquerdo
-            //aux_4 = canto inferior esquerdo
+        
 
             if (nChan == 3)
             {
@@ -826,12 +831,6 @@ namespace SS_OpenCV
             int widthStep = s.widthStep;
             double x, y, dataPtrAux;
             int aux_1 = nChan - widthStep, aux_2 = nChan + widthStep, aux_3 = -nChan - widthStep, aux_4 = -nChan + widthStep;
-            //aux_1 = canto superior direito
-            //aux_2 = canto inferior direito
-            //aux_3 = canto superior esquerdo
-            //aux_4 = canto inferior esquerdo
-
-
 
             if (nChan == 3) {
                 dataPtr = dataPtr + nChan + widthStep;
